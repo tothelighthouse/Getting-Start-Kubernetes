@@ -1,65 +1,66 @@
 apiVersion: batch/v1
 kind: CronJob
 metadata:
-  name: kjlkj
-  labels:
-    app: lklkjlk
+  name: lkjlkj
 spec:
   jobTemplate:
     metadata:
-      name: lkjlkj
+      name: lkjlkjlk
       labels:
-        lkjlk: lkjlkj
+        app: welkjlkj
     spec:
       template:
         spec:
           volumes:
-            - name: lkjk,lkjlkj,jlkjlkj
+            - name: lkjlk,lkjlkj,lkjlkj
               hostPath:
-                path: /lkjlk/lkjlkjlkj
+                path: /lkjkl/lkjlkjlkj
           containers:
-            - name: lkjlkj
+            - name: mlkjlkj
               image: mysql:latest
               ports:
                 - containerPort: 80
               volumeMounts:
                 - mountPath: /lkjlkj/lkjlkj
-                  name: lkjk,lkjlkj,jlkjlkj
+                  name: lkjlk,lkjlkj,lkjlkj
           restartPolicy: Never
-  schedule: ""
-  startingDeadlineSeconds: 1000
-  concurrencyPolicy: Forbid
+  schedule: "kljlkj"
+  startingDeadlineSeconds: 100
+  concurrencyPolicy: Forbod
+
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
-  name: lkj
+  name: lkjlkj
   labels:
     app: lkjlkj
 spec:
   selector:
     matchLabels:
-      app: lkjlkjlkj
+      app: lkjlkj
     matchExpressions:
       - key: lkjlkj
         operator: Exists
   template:
+    metadata:
+      name: lkjlkj
+      labels:
+        app: lkjdslkj
     spec:
       volumes:
-        - name: lkjl,jlkjlkj
+        - name: lkjkl,lkjlkji,kjlkjl
           hostPath:
-            path: /lkjlkj/lkjlkj
+            path: /lkjkl/lkjlkj
+            type: Directory
       containers:
-        - name: lkjlkj
-          image: mysql:latest
+        - name: lkjljk
+          image: nginx:latest
           ports:
             - containerPort: 80
           volumeMounts:
-            - mountPath: /lkjk/ljklkj
-              name: lkjl,jlkjlkj
-
-
-
+            - mountPath: /lkjlkj/lkjlkj
+              name: lkjkl,lkjlkji,kjlkjl
 
 
 

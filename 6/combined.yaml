@@ -19,3 +19,64 @@ spec:
             - -c
             - echo Hello; sleep 10; echo Bye
           restartPolicy: Never
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemonset-nginx
+spec:
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: webui
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.14
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: centos-job
+spec:
+  #  completions: 5
+  #  parallelism: 2
+  activeDeadlineSeconds: 5
+  template:
+    spec:
+      containers:
+        - name: centos-container
+          image: centos:7
+          command: ["bash"]
+          args:
+            - "-c"
+            - "echo 'Hello World'; sleep 25; echo 'Bye'"
+      restartPolicy: Never
+#      restartPolicy: OnFailure
+#  backoffLimit: 3
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: sf-nginx
+spec:
+  replicas: 3
+  serviceName: sf-service
+  #  podManagementPolicy: OrderedReady
+  podManagementPolicy: Parallel
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        app: webui
+    spec:
+      containers:
+        - name: nginx-container
+          image: nginx:1.14
