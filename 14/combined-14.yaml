@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-empty
+spec:
+  containers:
+  - image: nginx:1.14
+    name: nginx
+    volumeMounts:
+    - name: html
+      mountPath: /usr/share/nginx/html
+  volumes:
+  - name: html
+    emptyDir: {}
+---
+# 1
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+spec:
+  volumes:
+    - name: html
+      hostPath:
+        path: /webdata
+  containers:
+    - image: nginx:1.14
+      name: nginx
+      volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+---
+# 2
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web-nfs
+spec:
+  containers:
+    - image: nginx:1.14
+      name: nginx
+      volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+  volumes:
+    - name: html
+      nfs:
+        server: 172.27.20.50
+        path: /sharedir/k8s
+---
+#3
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv1
+spec:
+  capacity:
+    storage: 20Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  storageClassName: manual
+  persistentVolumeReclaimPolicy: Delete
+  nfs:
+    server: 172.27.20.50
+    path: /sharedir/k8s
+---
+#4
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-hostpath
+spec:
+  capacity:
+    storage: 2Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: manual
+  persistentVolumeReclaimPolicy: Delete
+  hostPath:
+    path: /tmp/k8s-pv
+---
+#5
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-web
+spec:
+  accessModes:
+    - ReadWriteMany
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: 20Gi
+  storageClassName: manual
+---
+#6
+apiVersion: v1
+kind: Pod
+metadata:
+  name: web
+spec:
+  containers:
+    - image: nginx:1.14
+      name: nginx
+      volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+  volumes:
+    - name: html
+      persistentVolumeClaim:
+        claimName: pvc-web
+---
+#7
+apiVersion: v1
+kind: Pod
+metadata:
+  name: volume-hostpath
+spec:
+  containers:
+    - name: volume-hostpath
+      image: nginx
+      volumeMounts:
+        - mountPath: /test-volume
+          name: hostpath-vol
+      ports:
+        - containerPort: 8080
+  volumes:
+    - name: hostpath-vol
+      hostPath:
+        path: /tmp
+        type: Directory
+
